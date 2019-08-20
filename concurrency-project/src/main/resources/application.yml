@@ -1,0 +1,59 @@
+server:
+  port: 8089
+
+spring:
+   rabbitmq:
+     virtual-host: /
+     host: localhost
+     username: guest
+     password: guest
+   application:
+     name: concurrency-project
+   redis:
+      host: localhost
+      port: 6379
+      jedis:
+        pool:
+          max-active: 1024
+          max-wait: -1s
+          max-idle: 200
+      password: 123456
+   datasource:
+         name: db_concurrency
+         type: com.alibaba.druid.pool.DruidDataSource
+         druid:
+           driver-class-name: com.mysql.jdbc.Driver
+           url: jdbc:mysql://localhost:3306/db_concurrency
+           username: root
+           password:
+           initial-size: 1
+           min-idle: 1
+           max-active: 20
+                     #获取连接等待超时时间
+           max-wait: 60000
+            #间隔多久进行一次检测，检测需要关闭的空闲连接
+           time-between-eviction-runs-millis: 60000
+   #一个连接在池中最小生存的时间
+           min-evictable-idle-time-millis: 300000
+           validation-query: SELECT 'x'
+           test-while-idle: true
+           test-on-borrow: false
+           test-on-return: false
+   #打开PSCache，并指定每个连接上PSCache的大小。oracle设为true，mysql设为false。分库分表较多推荐设置为false
+           pool-prepared-statements: false
+           max-pool-prepared-statement-per-connection-size: 20
+
+
+mybatis:
+    mapper-locations: mapper/*.xml
+    type-aliases-package: com.concurrency.concurrencyproject.model
+
+pagehelper:
+  helper-dialect: mysql
+
+mapper:
+  mappers: com.concurrency.concurrencyproject.base.service.GenericMapper
+  not-empty: false
+  identity: MYSQL
+
+
